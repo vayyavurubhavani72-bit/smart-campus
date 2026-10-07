@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CampusHub — a centralized college information dashboard for students." />
+  <title>CampusHub | Student Dashboard</title>
+  <style>
+    :root{
+      --bg:#f6f8fc; --surface:#fff; --text:#172033; --muted:#6b7487;
+      --primary:#4f46e5; --primary2:#7c3aed; --border:#e7eaf1;
+      --success:#0f9d74; --warning:#d97706; --danger:#dc4b62;
+      --shadow:0 10px 30px rgba(24,32,51,.07); --radius:18px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    button,input{font:inherit} button{cursor:pointer;border:0}
+    .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+    aside{background:#111827;color:#fff;padding:24px 16px;position:sticky;top:0;height:100vh}
+    .brand{display:flex;align-items:center;gap:12px;padding:8px 10px 28px}
+    .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:grid;place-items:center;font-weight:800}
+    .brand strong{font-size:18px}.brand small{display:block;color:#9ca3af;font-size:11px;margin-top:2px}
+    nav{display:grid;gap:7px}.nav-btn{background:transparent;color:#b8c0cf;text-align:left;padding:12px 14px;border-radius:12px;display:flex;gap:12px;align-items:center}
+    .nav-btn:hover,.nav-btn.active{background:#242b3b;color:#fff}.icon{width:20px;text-align:center}
+    .side-footer{position:absolute;bottom:22px;left:16px;right:16px;padding:14px;border:1px solid #303849;border-radius:14px;color:#aeb6c5;font-size:12px}
+    main{padding:28px 34px;max-width:1500px;width:100%;margin:auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:28px}
+    .welcome h1{font-size:28px;margin:0 0 5px}.welcome p{margin:0;color:var(--muted)}
+    .header-actions{display:flex;align-items:center;gap:12px}.search{position:relative}
+    .search input{width:260px;border:1px solid var(--border);background:var(--surface);padding:11px 14px 11px 38px;border-radius:12px;outline:none}
+    .search span{position:absolute;left:13px;top:10px;color:#8a92a4}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e9e7ff;color:#5146bd;font-weight:800}
+    .hero{background:linear-gradient(115deg,#4f46e5,#6d4eea 55%,#8b5cf6);color:white;border-radius:22px;padding:26px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);margin-bottom:22px;overflow:hidden}
+    .hero h2{margin:0 0 7px;font-size:23px}.hero p{margin:0;color:#e7e5ff}.hero .date{background:rgba(255,255,255,.13);padding:13px 17px;border-radius:14px;text-align:right;font-size:13px}
+    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    .quick-card,.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .quick-card{padding:18px;display:flex;gap:14px;align-items:center;transition:.2s}.quick-card:hover{transform:translateY(-2px)}
+    .qicon{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:#eef0ff;color:var(--primary);font-size:20px}
+    .quick-card strong{display:block}.quick-card small{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1.35fr .9fr;gap:20px}.card{padding:21px}.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.card h3{margin:0;font-size:17px}.link{color:var(--primary);background:none;font-size:13px}
+    .schedule{display:grid;gap:10px}.class-row{display:grid;grid-template-columns:78px 1fr auto;gap:15px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:13px}
+    .time{font-size:13px;color:var(--muted)}.class-row strong{font-size:14px}.class-row small{display:block;color:var(--muted);margin-top:4px}.room{font-size:12px;background:#f0f1ff;color:#5146bd;padding:7px 9px;border-radius:9px}
+    .event{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--border)}.event:last-child{border-bottom:0}
+    .event-date{width:45px;height:49px;border-radius:11px;background:#fff0f2;color:var(--danger);display:grid;place-items:center;text-align:center;font-weight:800;font-size:12px}.event-date b{font-size:17px;display:block}
+    .event strong{font-size:14px}.event small{color:var(--muted);display:block;margin-top:5px}
+    .notice{padding:13px;border-radius:12px;background:#f8f9fd;margin-bottom:10px}.notice strong{font-size:13px}.notice p{font-size:12px;color:var(--muted);margin:5px 0 0;line-height:1.5}
+    .facilities{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.facility{padding:15px;border:1px solid var(--border);border-radius:13px;text-align:center}.facility .big{font-size:25px}.facility strong{display:block;font-size:13px;margin-top:7px}.facility small{color:var(--muted)}
+    .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);z-index:20;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modal-box{background:white;border-radius:20px;max-width:480px;width:100%;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.2)}.close{float:right;background:#f1f2f6;border-radius:9px;width:32px;height:32px}.modal-box h2{margin-top:0}.modal-box input{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;margin:8px 0 12px}.primary{background:var(--primary);color:#fff;padding:11px 16px;border-radius:10px}
+    .toast{position:fixed;right:24px;bottom:24px;background:#172033;color:white;padding:13px 17px;border-radius:12px;opacity:0;transform:translateY(15px);transition:.25s;z-index:30}.toast.show{opacity:1;transform:none}
+    @media(max-width:1050px){.quick{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.app{grid-template-columns:80px 1fr}aside{padding:20px 12px}.brand div:not(.logo),.nav-btn span:not(.icon),.side-footer{display:none}.brand{padding:5px 7px 28px}.nav-btn{justify-content:center}}
+    @media(max-width:700px){.app{display:block}aside{height:auto;position:sticky;z-index:10;top:0;padding:9px 12px}.brand{display:none}nav{display:flex;justify-content:space-around}.nav-btn{padding:9px}.nav-btn.active{background:#242b3b}.nav-btn span:not(.icon){display:none}main{padding:20px 14px}.header-actions .search{display:none}.welcome h1{font-size:23px}.hero{padding:20px;display:block}.hero .date{margin-top:16px;text-align:left}.quick{grid-template-columns:1fr 1fr}.facilities{grid-template-columns:1fr 1fr}.class-row{grid-template-columns:65px 1fr}.room{display:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><div class="logo">CH</div><div><strong>CampusHub</strong><small>Student Portal</small></div></div>
+    <nav>
+      <button class="nav-btn active" onclick="showToast('Dashboard selected')"><span class="icon">⌂</span><span>Dashboard</span></button>
+      <button class="nav-btn" onclick="openModal('Timetable','Your complete weekly timetable will appear here.')"><span class="icon">▦</span><span>Timetable</span></button>
+      <button class="nav-btn" onclick="openModal('Events','Browse workshops, clubs, seminars and campus events.')"><span class="icon">◷</span><span>Events</span></button>
+      <button class="nav-btn" onclick="openModal('Resources','Access notes, assignments, library resources and academic links.')"><span class="icon">▤</span><span>Resources</span></button>
+      <button class="nav-btn" onclick="openModal('Faculty Services','Find faculty contacts, office hours and student support.')"><span class="icon">♙</span><span>Faculty</span></button>
+      <button class="nav-btn" onclick="openModal('Campus Facilities','Explore labs, library, sports, cafeteria and other facilities.')"><span class="icon">⌖</span><span>Facilities</span></button>
+    </nav>
+    <div class="side-footer">All your campus information, organized in one place.</div>
+  </aside>
+
+  <main>
+    <header>
+      <div class="welcome"><h1>Good morning, Bhavani 👋</h1><p>Here’s what’s happening on campus today.</p></div>
+      <div class="header-actions">
+        <div class="search"><span>⌕</span><input id="search" placeholder="Search campus..." oninput="filterNotices()"></div>
+        <div class="avatar">B</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div><h2>Your campus, simplified.</h2><p>Find classes, events, resources and services without switching platforms.</p></div>
+      <div class="date"><b id="today"></b><br>Academic Year 2026–27</div>
+    </section>
+
+    <section class="quick">
+      <button class="quick-card" onclick="openModal('Find a Classroom','Search by building, room number, block or department.')"><div class="qicon">⌖</div><div><strong>Find Classroom</strong><small>Locate your next class</small></div></button>
+      <button class="quick-card" onclick="openModal('Academic Resources','Open notes, assignments, syllabus and library materials.')"><div class="qicon">▤</div><div><strong>Resources</strong><small>Study smarter</small></div></button>
+      <button class="quick-card" onclick="openModal('Campus Events','Discover upcoming college events and activities.')"><div class="qicon">◷</div><div><strong>Events</strong><small>What’s happening?</small></div></button>
+      <button class="quick-card" onclick="openModal('Student Support','Connect with faculty and campus services.')"><div class="qicon">♙</div><div><strong>Student Support</strong><small>Get help quickly</small></div></button>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-head"><h3>Today’s timetable</h3><button class="link" onclick="openModal('Full Timetable','Your complete weekly timetable is ready to integrate here.')">View full timetable →</button></div>
+        <div class="schedule">
+          <div class="class-row"><div class="time">09:00<br>10:00</div><div><strong>Data Structures</strong><small>Dr. Priya Sharma · CSE</small></div><span class="room">Block A · 204</span></div>
+          <div class="class-row"><div class="time">10:15<br>11:15</div><div><strong>Database Management</strong><small>Prof. Arun Kumar · CSE</small></div><span class="room">Block A · 302</span></div>
+          <div class="class-row"><div class="time">11:30<br>12:30</div><div><strong>Operating Systems</strong><small>Dr. Meera Rao · CSE</small></div><span class="room">Block B · 108</span></div>
+          <div class="class-row"><div class="time">02:00<br>04:00</div><div><strong>Web Technology Lab</strong><small>Lab Coordinator · CSE</small></div><span class="room">Lab 3</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Upcoming events</h3><button class="link" onclick="openModal('All Events','A full event calendar can be connected here.')">See all →</button></div>
+        <div class="event"><div class="event-date"><b>10</b>OCT</div><div><strong>Tech Innovation Expo</strong><small>10:00 AM · Main Auditorium</small></div></div>
+        <div class="event"><div class="event-date"><b>14</b>OCT</div><div><strong>Career Guidance Session</strong><small>2:00 PM · Seminar Hall</small></div></div>
+        <div class="event"><div class="event-date"><b>18</b>OCT</div><div><strong>Inter-College Hackathon</strong><small>9:00 AM · Innovation Lab</small></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Campus notices</h3><button class="link" onclick="openModal('All Notices','All official campus announcements can be displayed here.')">View all →</button></div>
+        <div id="notices">
+          <div class="notice"><strong>Mid-semester examination schedule published</strong><p>Check the academic resources section for your department timetable.</p></div>
+          <div class="notice"><strong>Library extended hours</strong><p>The central library will remain open until 9:00 PM this week.</p></div>
+          <div class="notice"><strong>Scholarship applications open</strong><p>Eligible students can submit applications through the student services portal.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Campus facilities</h3><button class="link" onclick="openModal('Facilities','Detailed facility information can be connected here.')">Explore →</button></div>
+        <div class="facilities">
+          <div class="facility"><div class="big">📚</div><strong>Library</strong><small>Open · 8 AM–9 PM</small></div>
+          <div class="facility"><div class="big">💻</div><strong>Computer Labs</strong><small>3 labs available</small></div>
+          <div class="facility"><div class="big">🏟️</div><strong>Sports</strong><small>Open · 6 AM–8 PM</small></div>
+          <div class="facility"><div class="big">☕</div><strong>Cafeteria</strong><small>Open · 8 AM–7 PM</small></div>
+          <div class="facility"><div class="big">🩺</div><strong>Health Center</strong><small>Open · 9 AM–5 PM</small></div>
+          <div class="facility"><div class="big">🚌</div><strong>Transport</strong><small>Next · 10:30 AM</small></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box"><button class="close" onclick="closeModal()">×</button><h2 id="modalTitle"></h2><p id="modalText" style="color:#6b7487;line-height:1.6"></p><input placeholder="Search or enter details..." /><button class="primary" onclick="closeModal()">Continue</button></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const d = new Date();
+  document.getElementById('today').textContent = d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  function openModal(title,text){document.getElementById('modalTitle').textContent=title;document.getElementById('modalText').textContent=text;document.getElementById('modal').classList.add('show')}
+  function closeModal(){document.getElementById('modal').classList.remove('show')}
+  function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  function filterNotices(){const q=document.getElementById('search').value.toLowerCase();document.querySelectorAll('.notice').forEach(n=>n.style.display=n.textContent.toLowerCase().includes(q)?'block':'none')}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+</body>
+</html>
